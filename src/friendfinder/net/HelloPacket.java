@@ -23,6 +23,8 @@ import java.util.UUID;
 public class HelloPacket implements IMessage {
 
     public UUID id;
+    /** Highest position format this client understands. Absent from protocol 1 clients. */
+    public int protocol = PositionPacket.PROTOCOL;
 
     public HelloPacket() {}
 
@@ -32,18 +34,21 @@ public class HelloPacket implements IMessage {
     public void toBytes(ByteBuf buf) {
         buf.writeLong(id.getMostSignificantBits());
         buf.writeLong(id.getLeastSignificantBits());
+        buf.writeByte(protocol);
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
         id = new UUID(buf.readLong(), buf.readLong());
+        // An older client stops after the id. It gets the older format back.
+        protocol = buf.isReadable() ? buf.readUnsignedByte() : 1;
     }
 
-    /** Runs on the network thread; Subscribers is a concurrent set. */
+    /** Runs on the network thread; Subscribers is a concurrent map. */
     public static class Handler implements IMessageHandler<HelloPacket, IMessage> {
         @Override
         public IMessage onMessage(HelloPacket msg, MessageContext ctx) {
-            if (msg.id != null) Subscribers.add(msg.id);
+            if (msg.id != null) Subscribers.add(msg.id, msg.protocol);
             return null;
         }
     }

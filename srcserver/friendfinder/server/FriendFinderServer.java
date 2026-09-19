@@ -27,7 +27,7 @@ import java.util.UUID;
  */
 @Mod(modid = FriendFinderServer.MODID,
      name = "Friend Finder (server)",
-     version = "1.1.0",
+     version = "1.2.0",
      serverSideOnly = true,
      acceptableRemoteVersions = "*",
      acceptedMinecraftVersions = "[1.12.2]")
@@ -63,13 +63,17 @@ public class FriendFinderServer {
     }
 
     private void sendTo(EntityPlayerMP to, List<EntityPlayerMP> all) {
-        if (!Subscribers.contains(McServer.uuid(to))) return;
+        int protocol = Subscribers.protocolOf(McServer.uuid(to));
+        if (protocol == 0) return;                               // never announced itself
         int dim = McServer.dimension(to);
-        PositionPacket packet = new PositionPacket();
+        // Written in the format this particular client asked for, so an old client is
+        // never handed bytes it cannot parse.
+        PositionPacket packet = new PositionPacket(protocol);
         for (EntityPlayerMP other : all) {
             if (other == to) continue;
             if (McServer.dimension(other) != dim) continue;      // another dimension: hidden
-            packet.add(McServer.uuid(other), McServer.posX(other), McServer.posY(other), McServer.posZ(other));
+            packet.add(McServer.uuid(other), McServer.posX(other), McServer.posY(other), McServer.posZ(other),
+                       McServer.health(other));
         }
         try {
             // Sent even when empty: a full snapshot every time is what lets the client

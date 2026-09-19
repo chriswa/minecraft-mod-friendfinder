@@ -7,7 +7,12 @@ server, so you can find each other without asking for coordinates.
 - **Off screen or behind you** — pinned to the edge of the screen with an arrow
   pointing the way you would need to turn.
 - **Underneath** — the exact distance in whole metres, white with a black outline.
-- **Always shown**, however close they are. F1 hides it with the rest of the HUD.
+- **Above** — a thin health bar, one face-pixel tall, green on black. Full at ten
+  hearts or more.
+- **Hidden only** when a player is within ten metres, already on your screen, *and*
+  actually visible — a single ray trace to their head decides the last part, so
+  someone standing behind a wall still gets a marker. Behind you or further off, it
+  always shows. F1 hides everything with the rest of the HUD.
 
 No configuration, no keybinds, no GUI.
 
@@ -33,6 +38,21 @@ unaffected. Anyone running the old client half just keeps short-range markers.
 The server only sends to clients that announced themselves (a `HelloPacket` repeated
 every five seconds, so a server restart re-subscribes everyone without reconnecting).
 Players without the mod are never sent anything.
+
+### Mixed versions are safe
+
+The `HelloPacket` carries the protocol the client speaks, and the server replies in
+that format — so an old client is never handed bytes it would misparse. A new client
+reads either format, telling them apart by a marker byte the old format cannot
+produce. In practice:
+
+| | old server | new server |
+|---|---|---|
+| **old client** | works | works, no health over long range |
+| **new client** | works, no health over long range | everything |
+
+Health for players close enough to be real entities always works: it is synced to
+every client tracking them, so it needs nothing from the server half at all.
 
 Skins work at any distance: the tab list already carries every online player's skin,
 so a marker 5000 blocks away still shows the right face.
@@ -79,9 +99,9 @@ file with the readable name in its javadoc, so the rest of the mod reads normall
 
 - Third-person view (F5) projects from your eyes, not the offset camera, so
   markers are slightly off in third person at close range.
-- The two halves share `src/friendfinder/net`, compiled into both jars. Change the
-  wire format and you must rebuild and deploy both; there is nothing that detects
-  a version mismatch between them.
+- Glass counts as solid to the ray trace, so a player visible through a window is
+  treated as hidden and keeps their marker. That errs toward showing too much, which
+  is the safe direction.
 - Invisible players are still shown.
 - Skins come from the normal skin system; a player whose skin has not downloaded
   yet shows the default one.

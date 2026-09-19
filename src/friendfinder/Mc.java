@@ -16,6 +16,8 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -89,6 +91,30 @@ final class Mc {
 
     /** entity.getUniqueID() */
     static UUID uuid(Entity e) { return e.func_110124_au(); }
+
+    /**
+     * player.getHealth() — synced to every client tracking the entity, so this is the
+     * other player's real health, not a guess.
+     */
+    static float health(EntityPlayer p) { return p.func_110143_aJ(); }
+
+    /** Gui.drawRect(left, top, right, bottom, argb) */
+    static void rect(int left, int top, int right, int bottom, int argb) {
+        Gui.func_73734_a(left, top, right, bottom, argb);
+    }
+
+    /**
+     * True when nothing solid stands between the two points — world.rayTraceBlocks().
+     * It traces against collision boxes, so glass counts as solid: someone visible
+     * through a window is treated as hidden, which errs toward showing their marker.
+     */
+    static boolean lineOfSight(World w, double x1, double y1, double z1, double x2, double y2, double z2) {
+        try {
+            return w.func_72933_a(new Vec3d(x1, y1, z1), new Vec3d(x2, y2, z2)) == null;
+        } catch (Throwable t) {
+            return true;    // never let a trace failure hide someone's marker forever
+        }
+    }
 
     /** mc.getConnection() */
     static NetHandlerPlayClient connection(Minecraft mc) { return mc.func_147114_u(); }

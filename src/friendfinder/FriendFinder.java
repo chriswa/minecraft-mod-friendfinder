@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
  */
 @Mod(modid = FriendFinder.MODID,
      name = "Friend Finder",
-     version = "1.1.0",
+     version = "1.3.0",
      clientSideOnly = true,
      acceptedMinecraftVersions = "[1.12.2]")
 public class FriendFinder {

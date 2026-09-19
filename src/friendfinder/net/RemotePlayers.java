@@ -31,6 +31,8 @@ public final class RemotePlayers {
         private volatile double px, py, pz;     // where it was when the last packet arrived
         private volatile double tx, ty, tz;     // where that packet said to go
         private volatile long tPrev, tEnd;
+        /** Latest reported health, or PositionPacket.UNKNOWN from a server without it. */
+        public volatile float health = PositionPacket.UNKNOWN;
 
         Entry(UUID id, double x, double y, double z, long now) {
             this.id = id;
@@ -67,10 +69,12 @@ public final class RemotePlayers {
             seen.add(p.id);
             Entry e = ENTRIES.get(p.id);
             if (e == null) {
-                ENTRIES.put(p.id, new Entry(p.id, p.x, p.y, p.z, now));
+                e = new Entry(p.id, p.x, p.y, p.z, now);
+                ENTRIES.put(p.id, e);
             } else {
                 e.retarget(p.x, p.y, p.z, now);
             }
+            e.health = p.health;
         }
         // Every packet is a complete snapshot, so anyone missing from it has left,
         // disconnected, or changed dimension. Drop them immediately.

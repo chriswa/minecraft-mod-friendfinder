@@ -27,6 +27,9 @@ final class McServer {
     /** entity.getUniqueID() */
     static UUID uuid(EntityPlayer p) { return p.func_110124_au(); }
 
+    /** entity.getHealth() */
+    static float health(EntityPlayer p) { return p.func_110143_aJ(); }
+
     /** entity.posX / posY / posZ */
     static double posX(EntityPlayer p) { return p.field_70165_t; }
     static double posY(EntityPlayer p) { return p.field_70163_u; }
