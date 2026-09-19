@@ -1,0 +1,17 @@
+[
+  {
+    "modid": "friendfinder",
+    "name": "Friend Finder",
+    "description": "Shows a floating head for every other player on the server: over them when they are in view, pinned to the edge of the screen with an arrow when they are not, with the distance in metres underneath. Always shown, at any distance the server reports. Client-side only, no configuration.",
+    "version": "1.1.0",
+    "mcversion": "1.12.2",
+    "authorList": ["chriswa"],
+    "credits": "",
+    "logoFile": "",
+    "url": "",
+    "updateUrl": "",
+    "parent": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
