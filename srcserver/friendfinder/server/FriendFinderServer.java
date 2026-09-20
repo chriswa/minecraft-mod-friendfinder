@@ -35,7 +35,7 @@ import java.util.UUID;
  */
 @Mod(modid = FriendFinderServer.MODID,
      name = "Friend Finder (server)",
-     version = "1.3.0",
+     version = "1.4.0",
      serverSideOnly = true,
      acceptableRemoteVersions = "*",
      acceptedMinecraftVersions = "[1.12.2]")
