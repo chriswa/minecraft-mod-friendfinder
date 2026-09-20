@@ -16,6 +16,27 @@ server, so you can find each other without asking for coordinates.
 
 No configuration, no keybinds, no GUI.
 
+## Choosing who you share with
+
+`/friendfinder`, or `/ff` for short, opens a list of everyone online. Tick someone;
+nothing is shared until they tick you back. Your picks are yours alone and live in
+`config/friendfinder-friends.txt`, so they survive restarts and follow you between
+servers.
+
+The list is one list, not several, because people move between categories as either
+side ticks a box and a row moving within one list is easier to follow than a row
+jumping between two. It sorts into four groups, alphabetically inside each:
+
+1. **sharing** — you ticked them, they ticked you (green)
+2. **waiting on them** — you ticked, they have not (amber)
+3. **waiting on you** — they ticked, you have not (blue)
+4. **everyone else** (plain)
+
+Each row has two boxes: yours on the left, theirs on the right. It updates live as
+people join, leave, and tick you, and there is a search box for servers with a lot of
+players. The command is registered client-side, so it works even where the server half
+is not installed.
+
 ## Two halves
 
 **Client half** (`friendfinder.jar`, client-side only) works on its own against any
@@ -26,8 +47,8 @@ the data is not sent at all. JourneyMap's player radar has the same limit for th
 same reason.
 
 **Server half** (`friendfinder-server.jar`, server-side only) lifts the range
-entirely. Four times a second it sends each player the positions of everyone else
-**in the same dimension**. Someone in the Nether is simply absent from the snapshot,
+entirely. Four times a second it sends each player the positions of everyone they are
+**mutually sharing with**, filtered to the recipient's **own dimension**. Someone in the Nether is simply absent from the snapshot,
 so their marker disappears rather than pointing at a misleading overworld position.
 
 They are deliberately two jars rather than one common mod. Side-locked, neither can
@@ -48,8 +69,12 @@ produce. In practice:
 
 | | old server | new server |
 |---|---|---|
-| **old client** | works | works, no health over long range |
-| **new client** | works, no health over long range | everything |
+| **pre-1.4 client** | works, no consent model | nothing shared, and it says so in chat |
+| **1.4 client** | nearby players only | everything |
+
+The one hard break is deliberate: a client older than 1.4 has no way to say who it
+consents to share with, so a 1.4 server shares nothing with it rather than guessing.
+It gets one chat line explaining why, instead of failing silently.
 
 Health for players close enough to be real entities always works: it is synced to
 every client tracking them, so it needs nothing from the server half at all.

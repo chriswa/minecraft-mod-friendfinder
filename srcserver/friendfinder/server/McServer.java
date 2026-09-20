@@ -3,6 +3,7 @@ package friendfinder.server;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +30,14 @@ final class McServer {
 
     /** entity.getHealth() */
     static float health(EntityPlayer p) { return p.func_110143_aJ(); }
+
+    /** player.sendMessage(new TextComponentString(text)) */
+    static void tell(EntityPlayer p, String text) {
+        try {
+            p.func_145747_a(new TextComponentString(text));
+        } catch (Throwable ignored) {
+        }
+    }
 
     /** entity.posX / posY / posZ */
     static double posX(EntityPlayer p) { return p.field_70165_t; }

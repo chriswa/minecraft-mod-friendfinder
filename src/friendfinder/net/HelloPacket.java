@@ -24,7 +24,7 @@ public class HelloPacket implements IMessage {
 
     public UUID id;
     /** Highest position format this client understands. Absent from protocol 1 clients. */
-    public int protocol = PositionPacket.PROTOCOL;
+    public int protocol = FFNet.PROTOCOL;
 
     public HelloPacket() {}
 

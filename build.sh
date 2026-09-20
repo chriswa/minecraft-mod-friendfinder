@@ -24,6 +24,9 @@ FORGE="$PRISM/libraries/net/minecraftforge/forge/1.12.2-14.23.5.2860/forge-1.12.
 CLIENT="$PRISM/libraries/com/mojang/minecraft/1.12.2/minecraft-1.12.2-client.jar"
 ASM="$PRISM/libraries/org/ow2/asm/asm-debug-all/5.2/asm-debug-all-5.2.jar"
 NETTY="$PRISM/libraries/io/netty/netty-all/4.1.9.Final/netty-all-4.1.9.Final.jar"
+LWJGL="$PRISM/libraries/org/lwjgl/lwjgl/lwjgl/2.9.4-nightly-20150209/lwjgl-2.9.4-nightly-20150209.jar"
+AUTHLIB="$PRISM/libraries/com/mojang/authlib/1.5.25/authlib-1.5.25.jar"
+GUAVA="$PRISM/libraries/com/google/guava/guava/21.0/guava-21.0.jar"
 STUB="$HERE/build/mc-stub.jar"
 FORGE_STUB="$HERE/build/forge-stub.jar"   # Forge refers to MC by obfuscated names; rename those too
 
@@ -57,7 +60,7 @@ fi
 
 echo "compiling client half"
 rm -rf "$HERE/build/classes" && mkdir -p "$HERE/build/classes"
-"$JAVA_HOME/bin/javac" -nowarn -source 8 -target 8 -cp "$STUB:$FORGE_STUB:$NETTY" \
+"$JAVA_HOME/bin/javac" -nowarn -encoding UTF-8 -source 8 -target 8 -cp "$STUB:$FORGE_STUB:$NETTY:$LWJGL:$AUTHLIB:$GUAVA" \
   -d "$HERE/build/classes" "$HERE"/src/friendfinder/*.java "$HERE"/src/friendfinder/net/*.java
 cp "$HERE/src/mcmod.info" "$HERE/build/classes/"
 rm -f "$HERE/build/friendfinder.jar"
@@ -65,7 +68,7 @@ rm -f "$HERE/build/friendfinder.jar"
 
 echo "compiling server half"
 rm -rf "$HERE/build/classes-server" && mkdir -p "$HERE/build/classes-server"
-"$JAVA_HOME/bin/javac" -nowarn -source 8 -target 8 -cp "$STUB:$FORGE_STUB:$NETTY" \
+"$JAVA_HOME/bin/javac" -nowarn -encoding UTF-8 -source 8 -target 8 -cp "$STUB:$FORGE_STUB:$NETTY:$LWJGL:$AUTHLIB:$GUAVA" \
   -d "$HERE/build/classes-server" "$HERE"/srcserver/friendfinder/server/*.java "$HERE"/src/friendfinder/net/*.java
 cp "$HERE/srcserver/mcmod.info" "$HERE/build/classes-server/"
 rm -f "$HERE/build/friendfinder-server.jar"

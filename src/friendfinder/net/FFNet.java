@@ -16,6 +16,14 @@ public final class FFNet {
 
     public static final String CHANNEL_NAME = "friendfinder";
 
+    /**
+     * Handshake version. 1: positions. 2: added health. 3: added mutual opt-in, which
+     * is a rule change rather than a format change — a server will not share anything
+     * with a client below 3, because such a client has no way to express consent.
+     */
+    public static final int PROTOCOL = 3;
+    public static final int PROTOCOL_CONSENT = 3;
+
     /** Server sends positions this often. 4 Hz: smooth once interpolated, ~1 KB/s for a full server. */
     public static final int INTERVAL_TICKS = 5;
     public static final long INTERVAL_MS = 250L;
@@ -33,5 +41,7 @@ public final class FFNet {
         registered = true;
         CHANNEL.registerMessage(PositionPacket.Handler.class, PositionPacket.class, 0, Side.CLIENT);
         CHANNEL.registerMessage(HelloPacket.Handler.class, HelloPacket.class, 1, Side.SERVER);
+        CHANNEL.registerMessage(SelectionPacket.Handler.class, SelectionPacket.class, 2, Side.SERVER);
+        CHANNEL.registerMessage(RosterPacket.Handler.class, RosterPacket.class, 3, Side.CLIENT);
     }
 }

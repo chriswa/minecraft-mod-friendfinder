@@ -2,8 +2,8 @@
   {
     "modid": "friendfinder",
     "name": "Friend Finder",
-    "description": "Shows a floating head for every other player on the server: over them when they are in view, pinned to the edge of the screen with an arrow when they are not, with the distance in metres underneath. Shown at any distance the server reports, and hidden only for a player within ten metres who is already on your screen. Client-side only, no configuration.",
-    "version": "1.2.0",
+    "description": "Shows a floating head for every other player on the server: over them when they are in view, pinned to the edge of the screen with an arrow when they are not, with the distance in metres underneath. Sharing is mutual and opt-in: /friendfinder (or /ff) lists everyone online and you each tick the other before anything is shared. Shows a health bar above each head, and hides a player within ten metres you can actually see. Client-side only, no configuration.",
+    "version": "1.4.0",
     "mcversion": "1.12.2",
     "authorList": ["chriswa"],
     "credits": "",

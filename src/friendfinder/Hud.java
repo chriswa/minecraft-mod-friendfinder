@@ -1,5 +1,6 @@
 package friendfinder;
 
+import friendfinder.net.Friends;
 import friendfinder.net.RemotePlayers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -172,6 +173,7 @@ public class Hud {
         if (players != null) {
             for (EntityPlayer p : players) {
                 if (p == self || !(p instanceof AbstractClientPlayer)) continue;
+                if (!shares(Mc.uuid(p))) continue;
                 loaded.add(Mc.uuid(p));
                 double x = lerp(Mc.lastX(p), Mc.posX(p), pt);
                 double y = lerp(Mc.lastY(p), Mc.posY(p), pt);
@@ -184,6 +186,7 @@ public class Hud {
         long now = System.currentTimeMillis();
         for (RemotePlayers.Entry e : RemotePlayers.current()) {
             if (loaded.contains(e.id)) continue;   // a real entity is exact and perfectly smooth
+            if (!shares(e.id)) continue;           // the server should not have sent this anyway
             double[] at = e.at(now);
             out.add(new Target(at[0], at[1], at[2], at[1] + REMOTE_HEIGHT + HEAD_OFFSET,
                     Mc.skinFor(mc, e.id), e.health));
@@ -251,6 +254,18 @@ public class Hud {
         }
         Mc.drawString(mc, text, x, 0, 0xFFFFFFFF);
         Mc.popMatrix();
+    }
+
+    /**
+     * Whether to draw this player at all.
+     *
+     * Where the server runs the mod, sharing is mutual and the client enforces it too
+     * rather than trusting the feed. Where it does not, there is no way to agree on
+     * anything, so nearby players — whom you can see out of the window regardless —
+     * are shown as before.
+     */
+    private static boolean shares(UUID id) {
+        return !Friends.serverAware() || Friends.isMutual(id);
     }
 
     private static double lerp(double from, double to, float t) { return from + (to - from) * t; }

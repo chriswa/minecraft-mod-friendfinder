@@ -136,6 +136,9 @@ final class Mc {
     /** mc.getTextureManager().bindTexture(loc) */
     static void bindTexture(Minecraft mc, ResourceLocation loc) { mc.func_110434_K().func_110577_a(loc); }
 
+    /** new ScaledResolution(mc).getScaleFactor() — gui pixels per framebuffer pixel */
+    static int scaleFactor(Minecraft mc) { return new ScaledResolution(mc).func_78325_e(); }
+
     /** new ScaledResolution(mc) — GUI-space size */
     static int scaledWidth(Minecraft mc) { return new ScaledResolution(mc).func_78326_a(); }
     static int scaledHeight(Minecraft mc) { return new ScaledResolution(mc).func_78328_b(); }
