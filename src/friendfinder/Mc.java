@@ -116,6 +116,12 @@ final class Mc {
         }
     }
 
+    /** mc.currentScreen */
+    static net.minecraft.client.gui.GuiScreen screen(Minecraft mc) { return mc.field_71462_r; }
+
+    /** mc.displayGuiScreen(screen) */
+    static void openScreen(Minecraft mc, net.minecraft.client.gui.GuiScreen screen) { mc.func_147108_a(screen); }
+
     /** mc.getConnection() */
     static NetHandlerPlayClient connection(Minecraft mc) { return mc.func_147114_u(); }
 

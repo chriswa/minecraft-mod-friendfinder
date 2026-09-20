@@ -27,7 +27,7 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
  */
 @Mod(modid = FriendFinder.MODID,
      name = "Friend Finder",
-     version = "1.4.0",
+     version = "1.4.1",
      clientSideOnly = true,
      acceptedMinecraftVersions = "[1.12.2]")
 public class FriendFinder {
@@ -35,6 +35,9 @@ public class FriendFinder {
     public static final String MODID = "friendfinder";
 
     private int ticks;
+
+    /** Set by the command; cleared when the screen opens or the request goes stale. */
+    private static volatile int openRequest;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -45,6 +48,11 @@ public class FriendFinder {
     public void init(FMLInitializationEvent event) {
         FFNet.register();
         ClientCommandHandler.instance.func_71560_a(new CommandFriends());   // registerCommand
+        // Read it straight back: a command that failed to register is otherwise
+        // indistinguishable, in game, from one that ran and did nothing.
+        Object registered = ClientCommandHandler.instance.func_71555_a().get("friendfinder");   // getCommands()
+        Object alias = ClientCommandHandler.instance.func_71555_a().get("ff");
+        Log.info("commands registered: /friendfinder=" + (registered != null) + " /ff=" + (alias != null));
         MinecraftForge.EVENT_BUS.register(new Hud());
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -62,6 +70,18 @@ public class FriendFinder {
             ticks = 0;
             return;
         }
+
+        if (openRequest > 0) {
+            openRequest--;
+            if (Mc.screen(mc) == null) {      // chat has closed; nothing else is in the way
+                openRequest = 0;
+                try {
+                    Mc.openScreen(mc, new GuiFriends());
+                } catch (Throwable t) {
+                    Log.warn("could not open the list screen", t);
+                }
+            }
+        }
         if (ticks-- <= 0) {
             ticks = FFNet.HELLO_TICKS;
             try {
@@ -71,6 +91,14 @@ public class FriendFinder {
                 // Server without the mod, or mid-disconnect: markers just stay short-range.
             }
         }
+    }
+
+    /**
+     * Ask for the list screen. Honoured on a later tick by {@link #onClientTick}, so
+     * that chat has finished closing itself first.
+     */
+    public static void requestListScreen() {
+        openRequest = 40;      // give up after two seconds rather than opening at random later
     }
 
     /** Push the current picks now, so ticking a box takes effect immediately. */

@@ -3,7 +3,7 @@
     "modid": "friendfinderserver",
     "name": "Friend Finder (server)",
     "description": "Sends each player the positions and health of the others in their dimension, so Friend Finder markers work at any distance instead of stopping at view distance. Nothing is shared unless both players have ticked each other. Server-side only; only answers clients that have the mod, and never reveals players in other dimensions.",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "mcversion": "1.12.2",
     "authorList": ["chriswa"],
     "credits": "",

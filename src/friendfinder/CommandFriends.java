@@ -45,14 +45,11 @@ public class CommandFriends extends CommandBase {
     /** execute */
     @Override
     public void func_184881_a(MinecraftServer server, ICommandSender sender, String[] args) {
-        final Minecraft mc = Mc.mc();
-        // Chat closes itself right after a command runs and would clear whatever we
-        // opened, so open the screen on the next tick instead.
-        mc.func_152344_a(new Runnable() {
-            @Override
-            public void run() {
-                mc.func_147108_a(new GuiFriends());
-            }
-        });
+        // Not opened here, and deliberately not via Minecraft.addScheduledTask either:
+        // that runs inline when the caller is already on the client thread, which we are.
+        // The screen would open and then GuiChat, returning from sending this very
+        // command, would close it again with displayGuiScreen(null). Ask instead, and
+        // let the tick handler open it once chat has gone.
+        FriendFinder.requestListScreen();
     }
 }
